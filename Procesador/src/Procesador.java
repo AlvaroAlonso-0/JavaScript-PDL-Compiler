@@ -328,7 +328,8 @@ public class Procesador{
             equipara(8);
             T();
             equipara(13);
-            B1();            
+            B1();   
+            equipara(17);         
         }
         // B -> if ( E ) S
         else if(sig_tok.id() == 4){
