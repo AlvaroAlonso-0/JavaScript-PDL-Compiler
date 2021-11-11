@@ -1,0 +1,6 @@
+ERRORES DEL FICHERO FUENTE: 
+
+Error léxico en linea 3: Token '@' no esperado
+Error léxico en linea 3: Token '#' no esperado
+Error léxico en linea 3: Token '~' no esperado
+Error léxico en linea 3: Caracter ´ no contemplado en el lenguaje

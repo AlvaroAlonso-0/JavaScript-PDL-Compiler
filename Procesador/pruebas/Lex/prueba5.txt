@@ -1,0 +1,9 @@
+
+/* Funcion que calcula el factorial de un numero de manera recursiva */
+
+function int factorial(int x){
+		if(x>2){
+				return 666666;
+			}
+			return x * factorial(x-1);
+	}

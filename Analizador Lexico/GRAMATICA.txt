@@ -1,0 +1,14 @@
+S -> del S|lA|dB|"C|/D|=|,|;|(|)|{|}|+|!|>
+A -> lA|dA|_A|lambda				Palabra
+B -> dB|lambda					Numero
+C -> cC|"					String
+D -> =|*E					
+E -> mE|*F
+F -> nE|*F|/S
+
+l: a-z,A-Z
+d: cualquier digito
+c: cualquier caracter menos "
+m: cualquier caracter menos *
+n: cualquier caracter menos /
+del: tabulador, blanco, salto de linea

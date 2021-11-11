@@ -1,0 +1,22 @@
+######################################################################### Errores Lexico
+1 Entero fuera de rango. El máximo entero permitido es el 32767
+2 Cadena con más de 64 caracteres
+3 Caracter <token> no esperado.
+4 Variable <variable> ya declarada
+5 Se esperaba = o * despues de la /
+6 Caracter <car> no esta contemplado en el lenguaje
+7 Variable <variable> no declarada
+######################################################################### Errores Sintactico
+8 No se ha podido leer ningun token
+9 La forma de declarar una variable es: let tipo nombre [= expresion];
+10 Se esperaba uno de los siguientes tokens {',' , ';' , ')'} y se ha recibido <token>
+11 Se esperaba uno de los siguientes tokens {'>' , ',' , ';' , ')'} y se ha recibido <token> 
+12 Se esperaba uno de los siguientes tokens {'+', '>' ,' , ';' , ')'} y se ha recibido <token>
+13 Para cerrar los parametros se hace uso de ')'
+14 La forma de declarar parametros es: (tipo id {, tipo id, ...})
+15 Para cerrar el contenido de una funcion se hace uso de '}'
+16 La forma de realizar un return es: return expresion ;
+17 Para cerrar las condiciones de una funcion se hace uso de ')'
+18 La forma de establecer las condiciones de una funcion es (expresion {, expresion , ...})
+19 Se esperaba el token <tok_obligatorio> y se ha recibido el token <token>
+20 Para abrir los parametros se hace uso de '('

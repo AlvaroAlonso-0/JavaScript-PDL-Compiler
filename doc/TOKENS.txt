@@ -1,0 +1,29 @@
+TOKENS OBLIGATORIOS
+----------------------------
+boolean      1,-
+int          2,-
+string       3,-
+if           4,-
+while        5,-
+function     6,-
+input        7,-
+let          8,-
+print        9,-
+return       10,-
+ctEntera     11, valor(numero)
+Cadena (")   12, cadena(*c)
+id	         13, posicion en tabla de simbolos(lexema)
+asig (=)     14, -
+divAsig (/=) 15, -
+coma (,)     16, -
+puntoC (;)   17, -
+parA (       18, -
+parC )       19, -
+llaveA {     20, -
+llaveC }     21, -
+
+TOKENS ASOCIADOS
+----------------------------
+suma +       22, -
+negacion !   23, -
+mayor >      24, -

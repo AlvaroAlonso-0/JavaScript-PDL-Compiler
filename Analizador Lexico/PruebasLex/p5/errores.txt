@@ -1,0 +1,5 @@
+ERRORES DEL FICHERO FUENTE: 
+
+Error léxico en linea 6: Entero fuera de rango máximo de 32767
+Error léxico en linea 8: Token '*' no esperado
+Error léxico en linea 8: Token '-' no esperado

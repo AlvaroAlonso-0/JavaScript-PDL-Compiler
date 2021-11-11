@@ -1,0 +1,7 @@
+TABLA DE SIMBOLOS GLOBAL #1:
+
+*LEXEMA: 'factorial'
+	ATRIBUTOS: 
+
+*LEXEMA: 'x'
+	ATRIBUTOS: 
