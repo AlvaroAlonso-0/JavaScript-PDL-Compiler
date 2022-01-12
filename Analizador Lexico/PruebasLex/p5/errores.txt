@@ -1,5 +1,7 @@
 ERRORES DEL FICHERO FUENTE: 
 
+Error sintáctico en linea 4: Se esperaba el token 'id' y se ha recibido el token 'int'
+Error sintáctico en linea 4: Para cerrar las condiciones de una funcion se hace uso de ')'
+Error sintáctico en linea 4: Se esperaba el token ')' y se ha recibido el token 'int'
+Error sintáctico en linea 4: Se esperaba el token ';' y se ha recibido el token 'int'
 Error léxico en linea 6: Entero fuera de rango máximo de 32767
-Error léxico en linea 8: Token '*' no esperado
-Error léxico en linea 8: Token '-' no esperado

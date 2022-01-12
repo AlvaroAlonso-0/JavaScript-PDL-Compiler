@@ -1,0 +1,11 @@
+function suma int (int x, int y){
+	return x+y;
+}
+
+function negativo boolean (boolean b){
+	return !b;
+}
+
+function mayor boolean(int x, int y){
+	return x>y;
+}

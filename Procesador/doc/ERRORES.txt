@@ -20,3 +20,11 @@
 18 La forma de establecer las condiciones de una funcion es (expresion {, expresion , ...})
 19 Se esperaba el token <tok_obligatorio> y se ha recibido el token <token>
 20 Para abrir los parametros se hace uso de '('
+######################################################################### Errores Semantico
+21 El tipo de la expresion no coincide con el de la variable
+22 Se esperaba un tipo (int, boolean, string)
+23 Ambos lados de la expresion deben de ser enteros
+24 La expresion debe ser de tipo logico
+25 El numero de los parametros y el tipo deben coincidir
+26 La funcion no tiene ningun valor de retorno que asignar a la variable
+27 La expresion debe ser de tipo entero o cadena

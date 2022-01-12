@@ -19,13 +19,18 @@ public class Procesador{
     private static FileWriter FParse;   // Fichero de Parse
     private static String[] TPalRes = new String[10];   // Tabla de palabras reservadas
     private static int lineaActual = 1; // Numero de linea actual
-    private static boolean zonaDec = true; // Estamos en zona de declaracion
+    private static boolean zonaDec = false; // Estamos en zona de declaracion
+    public static String lexema = "";
     private static boolean TSGActiva = true; // La tabla de simbolos global esta activa , false -> es la local
     private static ArrayList<Object> TSG = new  ArrayList<Object>();//Tabla de Símbolos Global
     private static Map<String, Integer> existeTSG = new HashMap<String,Integer>(); // Comprobar si existe el identificador
     private static ArrayList<Object> TSL = new  ArrayList<Object>();//Tabla de Símbolos Local
     private static Map<String, Integer> existeTSL = new HashMap<String,Integer>(); // Comprobar si existe el identificador
-    private static Token sig_tok = null;
+    private static ArrayList<Object> TS = new ArrayList<Object>(); //Todas las tablas locales
+    private static ArrayList<String> TSName = new ArrayList<String>(); // Nombres de las tablas
+    private static int despG = 0, despL = 0, funActual = 0, nAmbitos = 1;
+    private static Token sig_tok = null; // Siguiente token
+    private static final String vac = "vac", fun = "fun", log = "log", cad = "cad", ent = "ent", ok = "tipo_ok", err = "tipo_error"; // Tipos Semantico
 
     public static void main(String[] args) {
         if(args.length == 0 || args[0].equals("-h") || args[0].equals("-help")){
@@ -179,11 +184,12 @@ public class Procesador{
 				MT_AFD.addValor(6, i, new Par(5, ' '));
 		}
     }
+    
     private static Token AnLex(){
         Token token = null;
         int estado = 0;
         char accion;
-        String lexema = "";
+        lexema = "";
         String valor = "";
 
         while(estado<7){ // Mientras no sea un estado final
@@ -225,7 +231,7 @@ public class Procesador{
                                 if(found){
                                     if(TSGActiva) token = genToken(13, Integer.toString(existeTSG.get(lexema))); // Creo el token con su posicion en la TS
                                     else token = genToken(13, Integer.toString(existeTSL.get(lexema)));
-                                    //gestorErrores("AnLex", 4, lexema);    // Variable ya declarada
+                                    gestorErrores("AnLex", 4, lexema, "");    // Variable ya declarada
                                 }
                                 else{
                                     ArrayList<Object> atribs = new ArrayList<Object>();
@@ -247,9 +253,9 @@ public class Procesador{
                                 }
                             }
                             else{ // No estoy en zona de declaracion
-                                if(!existeTSG.containsKey(lexema) && !existeTSL.containsKey(lexema)){ gestorErrores("AnLex", 7, lexema ,"");} // No esta declarada
+                                if(!existeTSG.containsKey(lexema) && !existeTSL.containsKey(lexema)){token = genToken(13, "0"); gestorErrores("AnLex", 7, lexema ,"");} // No esta declarada
                                 else {
-                                    if(TSGActiva) token = genToken(13, Integer.toString(existeTSG.get(lexema))); // Creo el token con su posicion en la TS
+                                    if(existeTSG.containsKey(lexema)) token = genToken(13, Integer.toString(existeTSG.get(lexema))); // Creo el token con su posicion en la TS
                                     else token = genToken(13, Integer.toString(existeTSL.get(lexema)));
                                 }
                             }
@@ -305,371 +311,587 @@ public class Procesador{
             }
         }
     }
-    private static void A(){
+    private static String A(){
         // A -> B A
         if(sig_tok.id() == 8 || sig_tok.id() == 4 || sig_tok.id() == 5 || sig_tok.id() == 13 || sig_tok.id() == 10 || sig_tok.id() == 9 || sig_tok.id() == 7){
             parse(1);
-            B();
-            A();
+            String b = B();
+            String a = A();
+            if(b.equals(vac)){ return a;}
+            else if(b.equals(err) || a.equals(err)) return err;
         }// A -> F A
         else if(sig_tok.id() == 6){
             parse(2);
-            F();
-            A();
+            String f = F();
+            String a = A();
+            if(f.equals(vac)){ return a;}
+            else if(f.equals(err) || a.equals(err)) return err;
         }// A -> lambda
         else if("$".equals(sig_tok.atributo())){
             parse(3);
+            return vac;
         }
+        return ok;
     }
-    private static void B(){
+    private static String B(){
         // B -> let T id B1 ;
         if(sig_tok.id() == 8){
             parse(4);
+            zonaDec = true;
             equipara(8);
-            T();
+            String[] t = T().split(" ");
+            int pos = Integer.parseInt(sig_tok.atributo());
             equipara(13);
-            B1();   
+            zonaDec = false;
+            if(!TSGActiva){ 
+                insertarTipoTS(pos, t[0], TSL);
+                insertarDespTS(pos, despL, TSL);
+                despL+=Integer.parseInt(t[1]);
+            } else{
+                insertarTipoTS(pos, t[0], TSG);
+                insertarDespTS(pos, despG, TSG);
+                despG+=Integer.parseInt(t[1]);
+            }
+            String bOne = B1(); 
             equipara(17);         
+            if(bOne.equals(vac) || bOne.equals(t[0])){ return ok;}
+            else{gestorErrores("AnSem", 21, "", ""); return err;}  
         }
         // B -> if ( E ) S
         else if(sig_tok.id() == 4){
             parse(5);
             equipara(4);
             equipara(18);
-            E();
+            String e = E();
+            if(!e.equals(log)){gestorErrores("AnSem", 24, "", ""); return err;}
             equipara(19);
-            S();
+            String s = S();
+            return s.split(" ")[0];
         }
         // B -> while ( E ) { C }
         else if(sig_tok.id() == 5){
             parse(6);
             equipara(5);
             equipara(18);
-            E();
+            String e = E();
+            if(!e.equals(log)){gestorErrores("AnSem", 24, "", ""); return err;}
             equipara(19);
             equipara(20);
-            C();
+            String c = C();
             equipara(21);
+            return c;
         }
         // B -> S
         else if(sig_tok.id() == 13 || sig_tok.id() == 10 || sig_tok.id() == 9 || sig_tok.id() == 7 ){
             parse(7);
-            S();
+            String s = S();
+            return s;
         }
+        return err;
     }
-    private static void T(){
+    private static String T(){
         // T -> int
         if(sig_tok.id() == 2){
             parse(12);
             equipara(2);
+            return (ent+" 1");
         }
         // T -> string
         else if(sig_tok.id() == 3){
             parse(13);
             equipara(3);
+            return (cad+" 64");
         }
         // T -> boolean
         else if(sig_tok.id() == 1){
             parse(14);
             equipara(1);
+            return (log+" 1");
         }
+        gestorErrores("AnSem", 22, "", "");
+        return err + " 0";
     }
-    private static void B1(){
+    private static String B1(){
         // B1 -> = E
         if(sig_tok.id() == 14){
             parse(8);
             equipara(14);
-            E();
+            return E();
         }
         // B1 -> lambda
         else if(sig_tok.id() == 17){
             parse(9);
+            return vac;
         }
         else{
             gestorErrores("AnSin", 9, "", "");
+            return err;
         }
     }
-    private static void E(){
+    private static String E(){
         // E -> E1 EX
         if(sig_tok.id() == 23 || sig_tok.id() == 18 || sig_tok.id() == 13 || sig_tok.id() == 12 || sig_tok.id() == 11){
             parse(24);
-            E1();
-            EX();
+            String eOne = E1();
+            String ex = EX();
+            if(eOne.equals(ent) && ex.equals(log)) return log;
+            else return eOne;
         }
+        return err;
     }
-    private static void E1(){
+    private static String E1(){
         // E1 -> E2 EX1
         if(sig_tok.id() == 23 || sig_tok.id() == 18 || sig_tok.id() == 13 || sig_tok.id() == 12 || sig_tok.id() == 11){
             parse(26);
-            E2();
-            EX1();
+            String e = E2();
+            String ex = EX1();
+            if(e.equals(ent) && ex.equals(ent)) return ent;
+            else return e;
         }
+        return err;
     }
-    private static void EX(){
+    private static String EX(){
         // EX -> > E1 EX
         if(sig_tok.id() == 24){
             parse(25);
             equipara(24);
-            E1();
-            EX();
+            String e = E1();
+            String ex = EX();
+            if(e.equals(ent) && (ex.equals(ent) || ex.equals(vac))) return log;
+            else{ gestorErrores("AnSem", 23, "", ""); return err;}
         } // EX -> lambda
         else if(sig_tok.id() == 16 || sig_tok.id() == 17 || sig_tok.id() == 19){
             parse(49);
+            return vac;
         }
         else{
             gestorErrores("AnSin", 10, token_decoder(sig_tok.id()), "");
+            return err;
         }
     }
-    private static void E2(){
+    private static String E2(){
         // E2 -> ! E2
         if(sig_tok.id() == 23){
             parse(28);
             equipara(23);
-            E2();
+            String e = E2();
+            if(e.equals(log)) return log;
+            else{gestorErrores("AnSem", 24, "", ""); return err;}
         }
         // E2 -> E3
         else if(sig_tok.id() == 18 || sig_tok.id() == 13 || sig_tok.id() == 12 || sig_tok.id() == 11){
             parse(29);
-            E3();
+            return E3();
         }
+        return err;
     }
-    private static void E3(){
+    @SuppressWarnings("unchecked")
+    private static String E3(){
         // E3 -> ( E )
         if(sig_tok.id() == 18){
             parse(30);
             equipara(18);
-            E();
+            String e = E();
             equipara(19);
+            return e;
         }// E3 -> id Q
         else if(sig_tok.id() == 13){
             parse(31);
+            int pos = Integer.parseInt(sig_tok.atributo());
+            String lex = lexema;
+            boolean existe = TSGActiva ? existeTSG.containsKey(lexema) : existeTSL.containsKey(lexema) || existeTSG.containsKey(lexema);
             equipara(13);
-            Q();
+            if(!existe){
+                ArrayList<Object> pointer = new ArrayList<Object>(); 
+                pointer.add(lex);
+                pointer.add(ent);
+                pointer.add(despG);
+                despG+=1;
+                pointer.add(""); pointer.add(new ArrayList<Object>()); pointer.add(""); pointer.add("");
+                TSG.add(pointer);
+                existeTSG.put(lex, TSG.size()-1);
+            }
+            pos = !existe ? TSG.size()-1 : pos;
+            boolean tabla = existeTSG.containsKey(lex);
+            String tipo = tabla ? (String)((ArrayList<Object>)TSG.get(pos)).get(1) : (String)((ArrayList<Object>)TSL.get(pos)).get(1);
+            String[] q = Q().split(" ");
+            if(tipo.equals(fun)){
+                if(q[0].equals(vac)){gestorErrores("AnSem", 26, "", ""); return err;}
+                else{
+                    String numParam = tabla ? (String)((ArrayList<Object>)TSG.get(pos)).get(3) : (String)((ArrayList<Object>)TSL.get(pos)).get(3);
+                    ArrayList<String> tipoParam = tabla ? (ArrayList<String>)((ArrayList<Object>)TSG.get(pos)).get(4) : (ArrayList<String>)((ArrayList<Object>)TSL.get(pos)).get(4);
+                    String tipoRet = tabla ? (String)((ArrayList<Object>)TSG.get(pos)).get(5) : (String)((ArrayList<Object>)TSL.get(pos)).get(5);
+                    boolean tParam = q[1].equals(numParam);
+                    for(int i=2; i<q.length && tParam;i++){tParam = q[i].equals(tipoParam.get(i-2));}
+                    if(tParam) return tipoRet;
+                    else{gestorErrores("AnSem", 25, "", ""); return err;}
+                }
+            } else return tipo;
         }// E3 -> cad
         else if(sig_tok.id() == 12){
             parse(34);
             equipara(12);
+            return cad;
         }// E3 -> ent
         else if(sig_tok.id() == 11){
             parse(35);
             equipara(11);
+            return ent;
         }
+        return err;
     }
-    private static void EX1(){
+    private static String EX1(){
         // EX1 -> + E2 EX1
         if(sig_tok.id() == 22){
             parse(27);
             equipara(22);
-            E2();
-            EX1();
+            String e = E2();
+            String ex = EX1();
+            if(e.equals(ent) && (ex.equals(ent) || ex.equals(vac))) return ent;
+            else{gestorErrores("AnSem", 23, "", ""); return err;}
         }// EX1 -> lambda
         else if(sig_tok.id() == 24 || sig_tok.id() == 16 || sig_tok.id() == 17 || sig_tok.id() == 19){
             parse(50);
+            return vac;
         }
         else{
             gestorErrores("AnSin", 11, token_decoder(sig_tok.id()), "");
+            return err;
         }
     }    
-    private static void Q(){
+    private static String Q(){
         //Q -> ( L )
         if(sig_tok.id() == 18){
             parse(33);
             equipara(18);
-            L();
+            String l = L();
             equipara(19);
+            return l;
         } // Q -> lambda
         else if(sig_tok.id() == 22 || sig_tok.id() == 24 || sig_tok.id() == 16 || sig_tok.id() == 17 || sig_tok.id() == 19){
             parse(32);
+            return vac + " 0";
         }
         else{
             gestorErrores("AnSin", 11, token_decoder(sig_tok.id()), "");
+            return err;
         }
     }
-    private static void F(){
+    private static String F(){
         parse(40);
         // F -> F1 F2 F3
-        F1();
-        F2();
-        F3();
+        String f1 = F1();
+        String[] f2 =  F2().split(" ");
+        if(f2[0].equals(err)) return err;
+        insertarNParam(funActual, f2[1]);
+        insertarTipoParam(funActual, f2);
+        String f3 = F3();
+        TSGActiva = true;
+        TS.add(TSL);
+        if(f1.equals(err) || f2[0].equals(err) || f3.equals(err)){ return err;}
+        else return ok;
     }
-    private static void F1(){
+    private static String F1(){
         parse(41);
         // F1 -> function id H
         if(sig_tok.id() == 6){
+            zonaDec = true;
             equipara(6);
+            funActual = Integer.parseInt(sig_tok.atributo());
+            TSName.add(lexema);
             equipara(13);
-            H();
+            TSGActiva = false;
+            TSL = new ArrayList<Object>();
+            existeTSL = new HashMap<String,Integer>();
+            despL = 0;
+            insertarTipoTS(funActual, fun, TSG);
+            String h = H();
+            insertarTipoRet(funActual, h);
+            insertarEtiq(funActual, nuevaEtiq());
+            nAmbitos++;
+            return ok;
         }
+        return err;
     }
-    private static void F2(){
+    private static String F2(){
         parse(42);
         // F2 -> ( P )
         if(sig_tok.id() == 18){
             equipara(18);
-            P();
+            String p = P();
             equipara(19);
+            zonaDec = false;
+            if(!p.equals(vac + " 0")){return p;}
+            else return "vac 0";
         }
+        return err;
     }
-    private static void F3(){
+    private static String F3(){
         parse(43);
         // F3 -> { C }
         if(sig_tok.id() == 20){
             equipara(20);
-            C();
+            String c = C();
             equipara(21);
+            return c;
         }
+        return err;
     }
-    private static void H(){
+    private static String H(){
         // H -> T
         if(sig_tok.id() == 1 || sig_tok.id() == 2 || sig_tok.id() == 3){
             parse(44);
-            T();
+            String[] t = T().split(" ");
+            return t[0];
         } // H -> lambda
         else if(sig_tok.id() == 18){
             parse(51);
+            return vac;
         }
         else{
             gestorErrores("AnSin", 20, "", "");
+            return err;
         }
     }
-    private static void P(){
+    private static String P(){
         // P -> T id P1
         if(sig_tok.id() == 2 || sig_tok.id() == 3 || sig_tok.id() == 1){
             parse(45);
-            T();
+            String[] t = T().split(" ");
+            int pos = Integer.parseInt(sig_tok.atributo());
             equipara(13);
-            P1();
+            insertarTipoTS(pos, t[0], TSL);
+            insertarDespTS(pos, despL, TSL);
+            despL+=Integer.parseInt(t[1]);
+            String[] p = P1().split(" ");
+            if(p[0].equals(vac)) return "tipo_ok 1 "+t[0];
+            else{
+                p[1]= Integer.toString(Integer.parseInt(p[1])+1);
+                return String.join(" ", p) + " "+t[0];
+            }
+            
         } // P -> lambda
         else if (sig_tok.id() == 19){
             parse(46);
+            return vac+ " 0";
         }
         else{
             gestorErrores("AnSin", 13, "", "");
+            return err;
         }
     }
-    private static void P1(){
+    private static String P1(){
         // P1 -> , T id P1
         if(sig_tok.id() == 16){
             parse(47);
             equipara(16);
-            T();
+            String[] t = T().split(" ");
             equipara(13);
-            P1();
+            insertarTipoTS(TSL.size()-1, t[0], TSL);
+            insertarDespTS(TSL.size()-1, despL, TSL);
+            despL+=Integer.parseInt(t[1]);
+            String[] p = P1().split(" ");
+            if(p[0].equals(vac)) return "tipo_ok 1 "+t[0];
+            else{
+                p[1]= Integer.toString(Integer.parseInt(p[1])+1);
+                return String.join(" ", p) + " "+t[0];
+            }
         }// P1 -> lambda
         else if(sig_tok.id() == 19){
             parse(48);
+            return vac + " 0";
         }
         else{
             gestorErrores("AnSin", 14, "", "");
+            return err;
         }
     }
-    private static void C(){
+    private static String C(){
         // C -> B C
         if(sig_tok.id() == 8 || sig_tok.id() == 4 || sig_tok.id() == 5 || sig_tok.id() == 13 || sig_tok.id() == 10 || sig_tok.id() == 9 || sig_tok.id() == 7){
             parse(10);
-            B();
-            C();
+            String b = B();
+            if(b.equals(err)) return err;
+            String c = C();
+            if(c.equals(vac)) return ok;
+            else return c;
+            
         }// C -> lambda
         else if(sig_tok.id() == 21){
             parse(11);
+            return vac;
         }
         else{
             gestorErrores("AnSin", 15, "", "");
+            return err;
         }
     }
-    private static void S(){
+    @SuppressWarnings("unchecked")
+    private static String S(){
         // S -> id N
         if(sig_tok.id() == 13){
             parse(15);
+            int pos = Integer.parseInt(sig_tok.atributo());
+            String lex = lexema;
+            boolean existe = TSGActiva ? existeTSG.containsKey(lexema) : existeTSL.containsKey(lexema) || existeTSG.containsKey(lexema);
             equipara(13);
-            N();
+            if(!existe){
+                ArrayList<Object> pointer = new ArrayList<Object>(); 
+                pointer.add(lex);
+                pointer.add(ent);
+                pointer.add(despG);
+                despG+=1;
+                pointer.add(""); pointer.add(new ArrayList<Object>()); pointer.add(""); pointer.add("");
+                TSG.add(pointer);
+                existeTSG.put(lex, TSG.size()-1);
+            }
+            pos = !existe ? TSG.size()-1 : pos;
+            boolean tabla = existeTSG.containsKey(lex);
+            String tipo = tabla ? (String)((ArrayList<Object>)TSG.get(pos)).get(1) : (String)((ArrayList<Object>)TSL.get(pos)).get(1);
+            String[] n = N().split(" ");
+            if(tipo.equals(fun)){
+                String numParam = tabla ? (String)((ArrayList<Object>)TSG.get(pos)).get(3) : (String)((ArrayList<Object>)TSL.get(pos)).get(3);
+                ArrayList<String> tipoParam = tabla ? (ArrayList<String>)((ArrayList<Object>)TSG.get(pos)).get(4) : (ArrayList<String>)((ArrayList<Object>)TSL.get(pos)).get(4);
+                boolean tParam = n[2].equals(numParam);
+                for(int i=3; i<n.length && tParam;i++){tParam = n[i].equals(tipoParam.get(i-3));}
+                if(tParam) return ok;
+                else {gestorErrores("AnSem", 25, "", ""); return err;}
+            } else if(n[0].equals(tipo)) return ok;
         }// S -> return R ;
         else if(sig_tok.id() == 10){
             parse(19);
             equipara(10);
-            R();
+            String r = R();
             equipara(17);
+            if(!TSGActiva){
+                String tipoRet = (String)((ArrayList<Object>)TSG.get(funActual)).get(5);
+                if(tipoRet.equals(r)) return ok + " " + tipoRet;
+                else return err + " " + err;
+            }
+            return ok + " " + r;
         }// S -> print ( E ) ;
         else if(sig_tok.id() == 9){
             parse(20);
             equipara(9);
             equipara(18);
-            E();
+            String e = E();
             equipara(19);
             equipara(17);
+            if(e.equals(cad) || e.equals(ent)) return ok;
+            gestorErrores("AnSem", 27, "", "");
+            return err;
         }// S -> input ( id ) ;
         else if(sig_tok.id() == 7){
             parse(21);
             equipara(7);
             equipara(18);
+            int pos = Integer.parseInt(sig_tok.atributo());
+            String lex = lexema;
+            boolean existe = TSGActiva ? existeTSG.containsKey(lexema) : existeTSL.containsKey(lexema) || existeTSG.containsKey(lexema);
             equipara(13);
+            if(!existe){
+                ArrayList<Object> pointer = new ArrayList<Object>(); 
+                pointer.add(lex);
+                pointer.add(ent);
+                pointer.add(despG);
+                despG+=1;
+                pointer.add(""); pointer.add(new ArrayList<Object>()); pointer.add(""); pointer.add("");
+                TSG.add(pointer);
+                existeTSG.put(lex, TSG.size()-1);
+            }
+            pos = !existe ? TSG.size()-1 : pos;
+            boolean tabla = existeTSG.containsKey(lex);
+            String tipo = tabla ? (String)((ArrayList<Object>)TSG.get(pos)).get(1) : (String)((ArrayList<Object>)TSL.get(pos)).get(1);
             equipara(19);
             equipara(17);
+            if(tipo.equals(cad) || tipo.equals(ent)) return ok;
+            gestorErrores("AnSem", 27, "", "");
+            return err;
         }
+        return err;
     }
-    private static void N(){
+    private static String N(){
         //N -> ( L ) ;
         if(sig_tok.id() == 18){
             parse(16);
             equipara(18);
-            L();
+            String l = L();
             equipara(19);
             equipara(17);
+            return fun + " " + l;
         }//N -> = E ;
         else if(sig_tok.id() == 14){
             parse(17);
             equipara(14);
-            E();
+            String e = E();
             equipara(17);
-
+            return e;
         }//N -> /= E ;
         else if(sig_tok.id() == 15){
             parse(18);
             equipara(15);
-            E();
+            String e = E();
             equipara(17);
+            return e;
         }
+        return err;
     }
-    private static void R(){
+    private static String R(){
         // R -> E
         if(sig_tok.id() == 23 || sig_tok.id() == 18 || sig_tok.id() == 13 || sig_tok.id() == 12 || sig_tok.id() == 11){
             parse(22);
-            E(); 
+            return E(); 
         }// R -> lambda
         else if(sig_tok.id() == 17){
             parse(23);
+            return vac;
         }
         else{
             gestorErrores("AnSin", 16, "", "");
+            return err;
         }
     }
-    private static void L(){
+    private static String L(){
         // L -> E L1
         if(sig_tok.id() == 23 || sig_tok.id() == 18 || sig_tok.id() == 13 || sig_tok.id() == 12 || sig_tok.id() == 11){
             parse(36);
-            E();
-            L1();
+            String e = E();
+            String[] l = L1().split(" ");
+            if(l[0].equals(vac)) return "tipo_ok 1 "+e;
+            else{
+                l[1]= Integer.toString(Integer.parseInt(l[1])+1);
+                return String.join(" ", l) + " "+e;
+            }
         } // L -> lambda
         else if(sig_tok.id() == 19){
             parse(37);
+            return vac +" 0";
         }
         else{
             gestorErrores("AnSin", 17, "", "");
+            return err;
         }
     }
-    private static void L1(){
+    private static String L1(){
         // L1 -> , E L1
         if(sig_tok.id() == 16){
             parse(38);
             equipara(16);
-            E();
-            L1();
+            String e = E();
+            String[] l = L1().split(" ");
+            if(l[0].equals(vac)) return "tipo_ok 1 "+e;
+            else{
+                l[1]= Integer.toString(Integer.parseInt(l[1])+1);
+                return String.join(" ", l) + " "+e;
+            }
         } // L1 -> lambda
         else if(sig_tok.id() == 19){
             parse(39);
+            return vac;
         }
         else{
             gestorErrores("AnSin", 18, "", "");
+            return err;
         }    
     }
     private static Token genToken(int id, String atributo){
@@ -700,7 +922,7 @@ public class Procesador{
     private static void equipara(int n){
         if(sig_tok.id() == n){
             sig_tok = AnLex();
-            if(sig_tok == null) { // Si me devuelve un error escribo todo y exit 1
+            if(sig_tok == null) { // Si me devuelve un error escribo y exit 1
                 writeTS();  // Vuelco las tablas
 
                 try {
@@ -741,6 +963,51 @@ public class Procesador{
             case 24: return ">";
             default: return "No existe token con este numero";
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void insertarTipoTS(int pos, String tipo, ArrayList<Object> TS){
+        ArrayList<Object> atribs = (ArrayList<Object>) TS.get(pos);
+        atribs.set(1,tipo);
+        TS.set(pos, atribs);
+    }
+    
+    @SuppressWarnings("unchecked")
+    private static void insertarDespTS(int pos, int desp, ArrayList<Object> TS){
+        ArrayList<Object> atribs = (ArrayList<Object>) TS.get(pos);
+        atribs.set(2,desp);
+        TS.set(pos, atribs);
+    }
+    @SuppressWarnings("unchecked")
+    private static void insertarNParam(int pos, String nParam){
+        ArrayList<Object> atribs = (ArrayList<Object>) TSG.get(pos);
+        atribs.set(3,nParam);
+        TSG.set(pos, atribs);
+    }
+    @SuppressWarnings("unchecked")
+    private static void insertarTipoParam(int pos, String[] p){
+        ArrayList<Object> atribs = (ArrayList<Object>) TSG.get(pos);
+        ArrayList<String> params = (ArrayList<String>)atribs.get(4);
+        for(int i=2; i<p.length; i++){
+            params.add(p[i]);
+        }
+        atribs.set(4,params);
+        TSG.set(pos, atribs);
+    }
+    @SuppressWarnings("unchecked")
+    private static void insertarTipoRet(int pos, String ret){
+        ArrayList<Object> atribs = (ArrayList<Object>) TSG.get(pos);
+        atribs.set(5,ret);
+        TSG.set(pos, atribs);
+    }
+    @SuppressWarnings("unchecked")
+    private static void insertarEtiq(int pos, String etiq){
+        ArrayList<Object> atribs = (ArrayList<Object>) TSG.get(pos);
+        atribs.set(6,etiq);
+        TSG.set(pos, atribs);
+    }
+    private static String nuevaEtiq(){
+        return "EtFun"+nAmbitos;
     }
     private static void gestorErrores(String analiser, int nError, String token, String tok_obligatorio){
         String msg; int linea = lineaActual;
@@ -793,6 +1060,20 @@ public class Procesador{
                     FErr.write(msg+"Se esperaba el token '" + tok_obligatorio + "' y se ha recibido el token '"+ token+ "'\n"); break;
                 case 20: 
                     FErr.write(msg+"Para abrir los parametros se hace uso de '('\n"); break;
+                case 21: 
+                    FErr.write(msg+"El tipo de la expresion no coincide con el de la variable\n"); break;
+                case 22: 
+                    FErr.write(msg+"Se esperaba un tipo (int, boolean, string)\n"); break;
+                case 23: 
+                    FErr.write(msg+"Ambos lados de la expresion deben de ser enteros\n"); break;
+                case 24: 
+                    FErr.write(msg+"La expresion debe ser de tipo logico\n"); break;
+                case 25: 
+                    FErr.write(msg+"El numero de los parametros y el tipo deben coincidir\n"); break;
+                case 26: 
+                    FErr.write(msg+"La funcion no tiene ningun valor de retorno que asignar a la variable\n"); break;
+                case 27: 
+                    FErr.write(msg+"La expresion debe ser de tipo entero o cadena\n"); break;                
             }
         } catch(IOException e) {e.printStackTrace();}
     }
@@ -800,13 +1081,14 @@ public class Procesador{
     private static void writeTS(){
         ArrayList<Object> atribs;
         String lex;
-        ArrayList<Object> ts;
+        ArrayList<Object> tablas;
+        int n = 1;
         
-        ts = TSG;
+        tablas = TSG;
         try {
             FTS.write("TABLA DE SIMBOLOS GLOBAL #1:\n");
-            while(!ts.isEmpty()){
-                atribs = (ArrayList<Object>)ts.remove(0);
+            while(!tablas.isEmpty()){
+                atribs = (ArrayList<Object>)tablas.remove(0);
                 lex = (String)atribs.get(0);
                 FTS.write("\n*LEXEMA: '"+lex+"'\n");
                 FTS.write("\tATRIBUTOS: \n");
@@ -817,20 +1099,26 @@ public class Procesador{
                         case 2:
                             if(!atribs.get(j).equals("")) FTS.write("\t+despl:\t\t\t'"+atribs.get(j)+"'\n"); break;
                         case 3:
-                            if(!atribs.get(j).equals("")) FTS.write("\t+numParam:\t\t\t'"+atribs.get(j)+"'\n"); break;
+                            if(!atribs.get(j).equals("")) FTS.write("\t+numParam:\t\t'"+atribs.get(j)+"'\n"); break;
                         case 4:
                             ArrayList<String> tipoParam = (ArrayList<String>) atribs.get(j);
                             if(!tipoParam.isEmpty())
                                 for(int k=0; k<tipoParam.size(); k++)
-                                    FTS.write("\t+tipoParam"+0+(k+1)+":\t'"+tipoParam.get(k)+"'\n"); break;
+                                    FTS.write("\t+tipoParam"+0+(k+1)+":\t\t'"+tipoParam.get(k)+"'\n"); break;
                         case 5:
-                            if(!atribs.get(j).equals("")) FTS.write("\t+tipoRet:\t\t\t'"+atribs.get(j)+"'\n"); break;
+                            if(!atribs.get(j).equals("")) FTS.write("\t+tipoRet:\t\t'"+atribs.get(j)+"'\n"); break;
                         case 6:
-                            if(!atribs.get(j).equals("")) FTS.write("\t+etiqFun:\t\t\t'"+atribs.get(j)+"'\n"); break;
+                            if(!atribs.get(j).equals("")) FTS.write("\t+etiqFun:\t\t'"+atribs.get(j)+"'\n"); break;
                     }
                 }
+                while(tablas.isEmpty() && !TSName.isEmpty() && !TS.isEmpty()){ 
+                    FTS.write("\n---------------------------------\n");
+                    FTS.write("TABLA DE SIMBOLOS DE "+ TSName.get(0)+" #" + n+ ":\n"); 
+                    TSName.remove(0); 
+                    tablas = (ArrayList<Object>)TS.remove(0);
+                    n++;
+                }
             }
-            //FTS.write("\n---------------------------------\n");
         } catch (IOException e) { e.printStackTrace();}
     }
 }

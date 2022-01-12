@@ -18,13 +18,13 @@ function dias int (int m, int a)
 }
 function esFechaCorrecta boolean (int d, int m, int a)	
 {
-	return (d > dias (m, a));
+	return !(d > dias (m, a));
 }
 function demo ()	
 {
 
-	if (esFechaCorrecta(25, 10, 2021)) print ("ok");
-	
+	if (esFechaCorrecta(22, 22, 2022)) print (9999);
+	return;
 }
-let boolean a_1_b_2;
+let boolean aaa111;
 demo();

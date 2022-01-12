@@ -1,0 +1,14 @@
+let int a;
+let   int  b;
+let boolean bbb;
+a = 3;
+b=a					    		 	 	 	 	 	 	 	 	 	 	 	 	 	 	 													;
+let boolean c;
+
+c = a > b;
+if (c) b /= 1;
+c = b > a;
+if (c) b = 4;
+a = a + b;
+print (a) ;
+print(b);

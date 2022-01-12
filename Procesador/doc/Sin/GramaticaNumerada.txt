@@ -1,0 +1,51 @@
+1.  A -> B A
+2.  A -> F A
+3.  A -> lambda
+4.  B -> let T id B1 ;
+5.  B -> if ( E ) S
+6.  B -> while ( E ) { C }
+7.  B -> S
+8.  B1 -> = E
+9.  B1 -> lambda
+10. C -> B C
+11. C -> lambda
+12. T -> int 
+13. T -> string
+14. T -> boolean
+15. S -> id N
+16. N -> ( L ) ;
+17. N -> = E ;
+18. N -> /= E ;
+19. S -> return R ;
+20. S -> print ( E ) ;
+21. S -> input ( id ) ;
+22. R -> E
+23. R -> lambda
+24. E -> E1 EX
+25. EX -> > E1 EX
+26. E1 -> E2 EX1
+27. EX1 -> + E2 EX1
+28. E2 -> ! E2
+29. E2 -> E3
+30. E3 -> ( E )
+31. E3 -> id Q
+32. Q -> lambda
+33. Q -> ( L )
+34. E3 -> cad
+35. E3 -> ent
+36. L -> E L1
+37. L -> lambda
+38. L1 -> , E L1
+39. L1 -> lambda
+40. F -> F1 F2 F3
+41. F1 -> function id H
+42. F2 -> ( P )
+43. F3 -> { C }
+44. H -> T
+45. P -> T id P1
+46. P -> lambda
+47. P1 -> , T id P1
+48. P1 -> lambda
+49. EX -> lambda
+50. EX1 -> lambda
+51. H -> lambda

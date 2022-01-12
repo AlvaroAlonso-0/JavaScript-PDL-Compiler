@@ -1,6 +1,0 @@
-ERRORES DEL FICHERO FUENTE: 
-
-Error sintáctico en linea 5: Para cerrar el contenido de una funcion se hace uso de '}'
-Error sintáctico en linea 5: Se esperaba el token '}' y se ha recibido el token ';'
-Error sintáctico en linea 12: Para cerrar el contenido de una funcion se hace uso de '}'
-Error sintáctico en linea 12: Se esperaba el token '}' y se ha recibido el token ';'
