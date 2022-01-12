@@ -1082,7 +1082,7 @@ public class Procesador{
         ArrayList<Object> atribs;
         String lex;
         ArrayList<Object> tablas;
-        int n = 1;
+        int n = 2;
         
         tablas = TSG;
         try {
