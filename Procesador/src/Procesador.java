@@ -1016,7 +1016,7 @@ public class Procesador{
         else if(analiser.equals("AnSin"))
             msg = String.format("Error sintáctico en linea %s: ", linea);
         else
-            msg = String.format("Error semántico %s: ", linea);
+            msg = String.format("Error semántico en linea %s: ", linea);
 
         try{
             switch(nError){
@@ -1106,9 +1106,9 @@ public class Procesador{
                                 for(int k=0; k<tipoParam.size(); k++)
                                     FTS.write("\t+tipoParam"+0+(k+1)+":\t\t'"+tipoParam.get(k)+"'\n"); break;
                         case 5:
-                            if(!atribs.get(j).equals("")) FTS.write("\t+tipoRet:\t\t'"+atribs.get(j)+"'\n"); break;
+                            if(!atribs.get(j).equals("")) FTS.write("\t+TipoRetorno:\t\t'"+atribs.get(j)+"'\n"); break;
                         case 6:
-                            if(!atribs.get(j).equals("")) FTS.write("\t+etiqFun:\t\t'"+atribs.get(j)+"'\n"); break;
+                            if(!atribs.get(j).equals("")) FTS.write("\t+EtiqFuncion:\t\t'"+atribs.get(j)+"'\n"); break;
                     }
                 }
                 while(tablas.isEmpty() && !TSName.isEmpty() && !TS.isEmpty()){ 

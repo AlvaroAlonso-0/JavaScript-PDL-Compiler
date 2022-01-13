@@ -1,0 +1,5 @@
+function factorial int (int x){
+    if(x>2) return 8947393;
+    
+    return x*factorial(x-1);
+}

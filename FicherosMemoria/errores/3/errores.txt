@@ -1,0 +1,5 @@
+ERRORES DEL FICHERO FUENTE: 
+
+Error semántico en linea 2: La expresion debe ser de tipo logico
+Error semántico en linea 4: Se esperaba un tipo (int, boolean, string)
+Error sintáctico en linea 4: La forma de declarar una variable es: let tipo nombre [= expresion];

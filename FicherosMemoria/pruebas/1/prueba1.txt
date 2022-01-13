@@ -16,4 +16,4 @@ function ff boolean(boolean ss, boolean dd, int rr){
 	return (l1);
 }		
 if (ff(l2, l1, n1))  print (varglobal); 
-input(c);
+input(n2);

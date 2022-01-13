@@ -1,0 +1,6 @@
+function factorial boolean (int x){
+    if("Cualquier cosa") x=1;
+
+    let numero y = ;
+    return factorial(x+1);
+}

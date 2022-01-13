@@ -1,0 +1,3 @@
+ERRORES DEL FICHERO FUENTE: 
+
+Error léxico en linea 2: Entero fuera de rango máximo de 32767

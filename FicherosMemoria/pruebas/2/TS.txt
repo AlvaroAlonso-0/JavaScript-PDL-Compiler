@@ -1,0 +1,61 @@
+TABLA DE SIMBOLOS GLOBAL #1:
+
+*LEXEMA: 'suma'
+	ATRIBUTOS: 
+	+tipo:			'fun'
+	+numParam:		'2'
+	+tipoParam01:		'ent'
+	+tipoParam02:		'ent'
+	+TipoRetorno:		'ent'
+	+EtiqFuncion:		'EtFun1'
+
+*LEXEMA: 'negativo'
+	ATRIBUTOS: 
+	+tipo:			'fun'
+	+numParam:		'1'
+	+tipoParam01:		'log'
+	+TipoRetorno:		'log'
+	+EtiqFuncion:		'EtFun2'
+
+*LEXEMA: 'mayor'
+	ATRIBUTOS: 
+	+tipo:			'fun'
+	+numParam:		'2'
+	+tipoParam01:		'ent'
+	+tipoParam02:		'ent'
+	+TipoRetorno:		'log'
+	+EtiqFuncion:		'EtFun3'
+
+---------------------------------
+TABLA DE SIMBOLOS DE suma #2:
+
+*LEXEMA: 'x'
+	ATRIBUTOS: 
+	+tipo:			'ent'
+	+despl:			'0'
+
+*LEXEMA: 'y'
+	ATRIBUTOS: 
+	+tipo:			'ent'
+	+despl:			'1'
+
+---------------------------------
+TABLA DE SIMBOLOS DE negativo #3:
+
+*LEXEMA: 'b'
+	ATRIBUTOS: 
+	+tipo:			'log'
+	+despl:			'0'
+
+---------------------------------
+TABLA DE SIMBOLOS DE mayor #4:
+
+*LEXEMA: 'x'
+	ATRIBUTOS: 
+	+tipo:			'ent'
+	+despl:			'0'
+
+*LEXEMA: 'y'
+	ATRIBUTOS: 
+	+tipo:			'ent'
+	+despl:			'1'

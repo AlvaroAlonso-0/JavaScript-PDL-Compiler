@@ -1,0 +1,4 @@
+ERRORES DEL FICHERO FUENTE: 
+
+Error semántico en linea 5: Se esperaba un tipo (int, boolean, string)
+Error semántico en linea 6: El tipo de la expresion no coincide con el de la variable

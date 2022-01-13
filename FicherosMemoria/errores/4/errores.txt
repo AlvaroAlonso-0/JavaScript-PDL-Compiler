@@ -1,0 +1,5 @@
+ERRORES DEL FICHERO FUENTE: 
+
+Error léxico en linea 11: Variable 'y' no declarada
+Error léxico en linea 11: Variable 'z' no declarada
+Error semántico en linea 11: El numero de los parametros y el tipo deben coincidir

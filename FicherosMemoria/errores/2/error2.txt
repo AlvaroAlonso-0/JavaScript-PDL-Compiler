@@ -1,0 +1,9 @@
+let int fib = 7;
+
+function fibonacci int (int n1){
+    let n2 = "1";
+    if(n1 > 7) let sum = n1+n2;
+    return sum;
+}
+
+let int resultado = fibonacci(fib);

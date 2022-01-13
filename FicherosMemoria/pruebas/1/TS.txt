@@ -1,0 +1,69 @@
+TABLA DE SIMBOLOS GLOBAL #1:
+
+*LEXEMA: 'n1'
+	ATRIBUTOS: 
+	+tipo:			'ent'
+	+despl:			'0'
+
+*LEXEMA: 'n2'
+	ATRIBUTOS: 
+	+tipo:			'ent'
+	+despl:			'1'
+
+*LEXEMA: 'l1'
+	ATRIBUTOS: 
+	+tipo:			'log'
+	+despl:			'2'
+
+*LEXEMA: 'l2'
+	ATRIBUTOS: 
+	+tipo:			'log'
+	+despl:			'3'
+
+*LEXEMA: 'cad'
+	ATRIBUTOS: 
+	+tipo:			'cad'
+	+despl:			'4'
+
+*LEXEMA: 'ff'
+	ATRIBUTOS: 
+	+tipo:			'fun'
+	+numParam:		'3'
+	+tipoParam01:		'ent'
+	+tipoParam02:		'log'
+	+tipoParam03:		'log'
+	+TipoRetorno:		'log'
+	+EtiqFuncion:		'EtFun1'
+
+*LEXEMA: 'varglobal'
+	ATRIBUTOS: 
+	+tipo:			'ent'
+	+despl:			'68'
+
+---------------------------------
+TABLA DE SIMBOLOS DE ff #2:
+
+*LEXEMA: 'ss'
+	ATRIBUTOS: 
+	+tipo:			'log'
+	+despl:			'0'
+
+*LEXEMA: 'dd'
+	ATRIBUTOS: 
+	+tipo:			'log'
+	+despl:			'1'
+
+*LEXEMA: 'rr'
+	ATRIBUTOS: 
+	+tipo:			'ent'
+	+despl:			'2'
+
+*LEXEMA: 'varglobal'
+	ATRIBUTOS: 
+	+tipo:			'cad'
+	+despl:			'3'
+
+*LEXEMA: 'f'
+	ATRIBUTOS: 
+	+tipo:			'log'
+	+despl:			'67'

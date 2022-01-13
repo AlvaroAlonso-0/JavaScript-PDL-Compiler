@@ -1,0 +1,97 @@
+TABLA DE SIMBOLOS GLOBAL #1:
+
+*LEXEMA: 'booleano'
+	ATRIBUTOS: 
+	+tipo:			'log'
+	+despl:			'0'
+
+*LEXEMA: 'bisiesto'
+	ATRIBUTOS: 
+	+tipo:			'fun'
+	+numParam:		'1'
+	+tipoParam01:		'ent'
+	+TipoRetorno:		'log'
+	+EtiqFuncion:		'EtFun1'
+
+*LEXEMA: 'dias'
+	ATRIBUTOS: 
+	+tipo:			'fun'
+	+numParam:		'2'
+	+tipoParam01:		'ent'
+	+tipoParam02:		'ent'
+	+TipoRetorno:		'ent'
+	+EtiqFuncion:		'EtFun2'
+
+*LEXEMA: 'esFechaCorrecta'
+	ATRIBUTOS: 
+	+tipo:			'fun'
+	+numParam:		'3'
+	+tipoParam01:		'ent'
+	+tipoParam02:		'ent'
+	+tipoParam03:		'ent'
+	+TipoRetorno:		'log'
+	+EtiqFuncion:		'EtFun3'
+
+*LEXEMA: 'demo'
+	ATRIBUTOS: 
+	+tipo:			'fun'
+	+numParam:		'0'
+	+TipoRetorno:		'vac'
+	+EtiqFuncion:		'EtFun4'
+
+*LEXEMA: 'A_A_A_'
+	ATRIBUTOS: 
+	+tipo:			'ent'
+	+despl:			'1'
+
+---------------------------------
+TABLA DE SIMBOLOS DE bisiesto #2:
+
+*LEXEMA: 'a'
+	ATRIBUTOS: 
+	+tipo:			'ent'
+	+despl:			'0'
+
+*LEXEMA: 'bis'
+	ATRIBUTOS: 
+	+tipo:			'cad'
+	+despl:			'1'
+
+---------------------------------
+TABLA DE SIMBOLOS DE dias #3:
+
+*LEXEMA: 'm'
+	ATRIBUTOS: 
+	+tipo:			'ent'
+	+despl:			'0'
+
+*LEXEMA: 'a'
+	ATRIBUTOS: 
+	+tipo:			'ent'
+	+despl:			'1'
+
+*LEXEMA: 'dd'
+	ATRIBUTOS: 
+	+tipo:			'ent'
+	+despl:			'2'
+
+---------------------------------
+TABLA DE SIMBOLOS DE esFechaCorrecta #4:
+
+*LEXEMA: 'd'
+	ATRIBUTOS: 
+	+tipo:			'ent'
+	+despl:			'0'
+
+*LEXEMA: 'm'
+	ATRIBUTOS: 
+	+tipo:			'ent'
+	+despl:			'1'
+
+*LEXEMA: 'a'
+	ATRIBUTOS: 
+	+tipo:			'ent'
+	+despl:			'2'
+
+---------------------------------
+TABLA DE SIMBOLOS DE demo #5:

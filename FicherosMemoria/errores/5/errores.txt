@@ -1,0 +1,9 @@
+ERRORES DEL FICHERO FUENTE: 
+
+Error léxico en linea 3: Variable 'x' no declarada
+Error semántico en linea 3: Ambos lados de la expresion deben de ser enteros
+Error semántico en linea 3: La expresion debe ser de tipo logico
+Error semántico en linea 4: El tipo de la expresion no coincide con el de la variable
+Error sintáctico en linea 5: Para cerrar el contenido de una funcion se hace uso de '}'
+Error semántico en linea 6: El tipo de la expresion no coincide con el de la variable
+Error semántico en linea 6: La funcion no tiene ningun valor de retorno que asignar a la variable

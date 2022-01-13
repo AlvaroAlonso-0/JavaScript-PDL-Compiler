@@ -1,0 +1,6 @@
+function lenguajes boolean (){
+    let int w = 1;
+    if(x > " ") 
+        return w;
+        
+let int y = lenguajes();

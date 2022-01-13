@@ -1,0 +1,16 @@
+TABLA DE SIMBOLOS GLOBAL #1:
+
+*LEXEMA: 'a'
+	ATRIBUTOS: 
+	+tipo:			'ent'
+	+despl:			'0'
+
+*LEXEMA: 'b'
+	ATRIBUTOS: 
+	+tipo:			'ent'
+	+despl:			'1'
+
+*LEXEMA: 'bbb'
+	ATRIBUTOS: 
+	+tipo:			'log'
+	+despl:			'2'
