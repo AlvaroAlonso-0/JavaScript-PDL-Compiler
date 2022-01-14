@@ -1102,9 +1102,13 @@ public class Procesador{
                             if(!atribs.get(j).equals("")) FTS.write("\t+numParam:\t\t'"+atribs.get(j)+"'\n"); break;
                         case 4:
                             ArrayList<String> tipoParam = (ArrayList<String>) atribs.get(j);
-                            if(!tipoParam.isEmpty())
-                                for(int k=0; k<tipoParam.size(); k++)
-                                    FTS.write("\t+tipoParam"+0+(k+1)+":\t\t'"+tipoParam.get(k)+"'\n"); break;
+                            if(!tipoParam.isEmpty()){
+                                int i=1;
+                                for(int k=tipoParam.size()-1; k>=0; k--){
+                                    FTS.write("\t+tipoParam"+0+(i)+":\t\t'"+tipoParam.get(k)+"'\n");
+                                    i++;
+                                }
+                            } break;
                         case 5:
                             if(!atribs.get(j).equals("")) FTS.write("\t+TipoRetorno:\t\t'"+atribs.get(j)+"'\n"); break;
                         case 6:

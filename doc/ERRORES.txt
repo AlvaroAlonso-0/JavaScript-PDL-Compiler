@@ -1,7 +1,0 @@
-1 Entero fuera de rango. El máximo entero permitido es el 32767
-2 Cadena con más de 64 caracteres
-3 Token <token> no esperado.
-4 Variable <variable> ya declarada
-5 Se esperaba = o * despues de la /
-6 Caracter <car> no esta contemplado en el lenguaje
-7 Variable <variable> no declarada

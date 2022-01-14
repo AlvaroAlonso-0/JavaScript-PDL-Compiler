@@ -29,9 +29,9 @@ TABLA DE SIMBOLOS GLOBAL #1:
 	ATRIBUTOS: 
 	+tipo:			'fun'
 	+numParam:		'3'
-	+tipoParam01:		'ent'
+	+tipoParam01:		'log'
 	+tipoParam02:		'log'
-	+tipoParam03:		'log'
+	+tipoParam03:		'ent'
 	+TipoRetorno:		'log'
 	+EtiqFuncion:		'EtFun1'
 
