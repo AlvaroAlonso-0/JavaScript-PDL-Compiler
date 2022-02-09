@@ -363,7 +363,11 @@ public class Procesador{
             equipara(4);
             equipara(18);
             String e = E();
-            if(!e.equals(log)){gestorErrores("AnSem", 24, "", ""); return err;}
+            if(!e.equals(log)){
+                gestorErrores("AnSem", 24, "", ""); 
+                equipara(19);
+                S();
+                return err;}
             equipara(19);
             String s = S();
             return s.split(" ")[0];
@@ -374,7 +378,13 @@ public class Procesador{
             equipara(5);
             equipara(18);
             String e = E();
-            if(!e.equals(log)){gestorErrores("AnSem", 24, "", ""); return err;}
+            if(!e.equals(log)){
+                gestorErrores("AnSem", 24, "", ""); 
+                equipara(19);
+                equipara(20);
+                C();
+                equipara(21);
+                return err;}
             equipara(19);
             equipara(20);
             String c = C();
@@ -582,7 +592,7 @@ public class Procesador{
         // F -> F1 F2 F3
         String f1 = F1();
         String[] f2 =  F2().split(" ");
-        if(f2[0].equals(err)) return err;
+        if(f2[0].equals(err)){F3(); return err;}
         insertarNParam(funActual, f2[1]);
         insertarTipoParam(funActual, f2);
         String f3 = F3();
@@ -597,6 +607,7 @@ public class Procesador{
         if(sig_tok.id() == 6){
             zonaDec = true;
             equipara(6);
+            if(sig_tok.atributo() ==  null){gestorErrores("AnSem", 28, "", ""); equipara(13); H(); return err;}
             funActual = Integer.parseInt(sig_tok.atributo());
             TSName.add(lexema);
             equipara(13);
@@ -711,7 +722,7 @@ public class Procesador{
         if(sig_tok.id() == 8 || sig_tok.id() == 4 || sig_tok.id() == 5 || sig_tok.id() == 13 || sig_tok.id() == 10 || sig_tok.id() == 9 || sig_tok.id() == 7){
             parse(10);
             String b = B();
-            if(b.equals(err)) return err;
+            if(b.equals(err)){C(); return err;}
             String c = C();
             if(c.equals(vac)) return ok;
             else return c;
@@ -749,6 +760,7 @@ public class Procesador{
             boolean tabla = existeTSG.containsKey(lex);
             String tipo = tabla ? (String)((ArrayList<Object>)TSG.get(pos)).get(1) : (String)((ArrayList<Object>)TSL.get(pos)).get(1);
             String[] n = N().split(" ");
+            if(n.length==1) return err;
             if(tipo.equals(fun)){
                 String numParam = tabla ? (String)((ArrayList<Object>)TSG.get(pos)).get(3) : (String)((ArrayList<Object>)TSL.get(pos)).get(3);
                 ArrayList<String> tipoParam = tabla ? (ArrayList<String>)((ArrayList<Object>)TSG.get(pos)).get(4) : (ArrayList<String>)((ArrayList<Object>)TSL.get(pos)).get(4);
@@ -756,7 +768,7 @@ public class Procesador{
                 for(int i=3; i<n.length && tParam;i++){tParam = n[i].equals(tipoParam.get(i-3));}
                 if(tParam) return ok;
                 else {gestorErrores("AnSem", 25, "", ""); return err;}
-            } else if(n[0].equals(tipo)) return ok;
+            } else if(n[0].equals(tipo)) { return ok;}
         }// S -> return R ;
         else if(sig_tok.id() == 10){
             parse(19);
@@ -768,7 +780,7 @@ public class Procesador{
                 if(tipoRet.equals(r)) return ok + " " + tipoRet;
                 else return err + " " + err;
             }
-            return ok + " " + r;
+            return err + " " + err;
         }// S -> print ( E ) ;
         else if(sig_tok.id() == 9){
             parse(20);
@@ -1073,7 +1085,9 @@ public class Procesador{
                 case 26: 
                     FErr.write(msg+"La funcion no tiene ningun valor de retorno que asignar a la variable\n"); break;
                 case 27: 
-                    FErr.write(msg+"La expresion debe ser de tipo entero o cadena\n"); break;                
+                    FErr.write(msg+"La expresion debe ser de tipo entero o cadena\n"); break;  
+                case 28: 
+                    FErr.write(msg+"La funcion debe tener un nombre\n"); break;              
             }
         } catch(IOException e) {e.printStackTrace();}
     }

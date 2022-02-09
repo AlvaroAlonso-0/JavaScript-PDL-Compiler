@@ -28,3 +28,4 @@
 25 El numero de los parametros y el tipo deben coincidir
 26 La funcion no tiene ningun valor de retorno que asignar a la variable
 27 La expresion debe ser de tipo entero o cadena
+28 La funcion debe tener un nombre
